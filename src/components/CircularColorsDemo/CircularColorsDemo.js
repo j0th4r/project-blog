@@ -35,7 +35,7 @@ function reducer(draftState, action) {
       return;
     }
 
-    case 'run': {
+    case 'increment': {
       draftState.count++;
       return;
     }
@@ -52,20 +52,34 @@ function CircularColorsDemo() {
   });
 
   React.useEffect(() => {
-    if (timeElapsed.isRunning) {
-      const intervalId = window.setInterval(() => {
-        dispatch({ type: 'run' });
-      }, 1000);
-
-      return () => {
-        window.clearInterval(intervalId);
-      };
+    if (timeElapsed.isRunning === false) {
+      return;
     }
+    const intervalId = window.setInterval(() => {
+      dispatch({ type: 'increment' });
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
   }, [timeElapsed.isRunning, dispatch]);
 
   // TODO: This value should cycle through the colors in the
   // COLORS array:
   const selectedColor = COLORS[timeElapsed.count % COLORS.length];
+
+  const handlePlay = React.useCallback(() => {
+    dispatch({ type: 'increment' });
+    dispatch({ type: 'play' });
+  }, [dispatch]);
+  const handlePause = React.useCallback(
+    () => dispatch({ type: 'pause' }),
+    [dispatch]
+  );
+  const handleReset = React.useCallback(
+    () => dispatch({ type: 'reset' }),
+    [dispatch]
+  );
 
   return (
     <Card as="section" className={styles.wrapper}>
@@ -104,17 +118,17 @@ function CircularColorsDemo() {
         </dl>
         <div className={styles.actions}>
           {timeElapsed.isRunning === false ? (
-            <button onClick={() => dispatch({ type: 'play' })}>
+            <button onClick={handlePlay}>
               <Play />
               <VisuallyHidden>Play</VisuallyHidden>
             </button>
           ) : (
-            <button onClick={() => dispatch({ type: 'pause' })}>
+            <button onClick={handlePause}>
               <Pause />
               <VisuallyHidden>Pause</VisuallyHidden>{' '}
             </button>
           )}
-          <button onClick={() => dispatch({ type: 'reset' })}>
+          <button onClick={handleReset}>
             <RotateCcw />
             <VisuallyHidden>Reset</VisuallyHidden>
           </button>
