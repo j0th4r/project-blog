@@ -5,7 +5,7 @@ import CircularColorsDemo from '@/components/CircularColorsDemo';
 const COMPONENTS_MAP = {
   pre: CodeSnippet,
   DivisionGroupsDemo,
-  CircularColorsDemo
+  CircularColorsDemo,
 };
 
 export default COMPONENTS_MAP;

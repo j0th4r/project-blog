@@ -9,31 +9,36 @@ import VisuallyHidden from '@/components/VisuallyHidden';
 import styles from './Header.module.css';
 import Cookie from 'js-cookie';
 
-import { LIGHT_TOKENS, DARK_TOKENS } from '@/constants';
+import {
+  LIGHT_TOKENS,
+  DARK_TOKENS,
+  COLOR_THEME_COOKIE_NAME,
+} from '@/constants';
 
 function Header({ initialTheme, className, ...delegated }) {
   const [theme, setTheme] = React.useState(initialTheme);
 
-  function handleClick() {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
+  function handleToggleTheme() {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
 
     // Update the state variable.
     // This causes the Sun/Moon icon to flip.
-    setTheme(nextTheme);
+    setTheme(newTheme);
 
     // Write the cookie for future visits
-    Cookie.set('color-theme', nextTheme, {
+    Cookie.set(COLOR_THEME_COOKIE_NAME, newTheme, {
       expires: 1000,
     });
 
     // Apply the new colors to the root HTML tag.
-    const colors = nextTheme === 'light' ? LIGHT_TOKENS : DARK_TOKENS;
+    const newTokens =
+      newTheme === 'light' ? LIGHT_TOKENS : DARK_TOKENS;
 
     const root = document.documentElement;
 
-    root.setAttribute('data-color-theme', nextTheme);
+    root.setAttribute('data-color-theme', newTheme);
 
-    Object.entries(colors).forEach(([key, value]) => {
+    Object.entries(newTokens).forEach(([key, value]) => {
       root.style.setProperty(key, value);
     });
   }
@@ -56,7 +61,7 @@ function Header({ initialTheme, className, ...delegated }) {
           />
           <VisuallyHidden>View RSS feed</VisuallyHidden>
         </button>
-        <button className={styles.action} onClick={handleClick}>
+        <button className={styles.action} onClick={handleToggleTheme}>
           {theme === 'light' ? (
             <Sun size="1.5rem" />
           ) : (
