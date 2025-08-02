@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import './styles.css';
 
 import RespectMotionPreferences from '@/components/RespectMotionPreferences';
+import { cookies } from 'next/headers';
 
 export const metadata = {
   title: BLOG_TITLE,
@@ -30,7 +31,8 @@ const monoFont = Spline_Sans_Mono({
 
 function RootLayout({ children }) {
   // TODO: Dynamic theme depending on user preference
-  const theme = 'light';
+  const savedTheme = cookies().get('color-theme');
+  const theme = savedTheme?.value || 'light';
 
   return (
     <RespectMotionPreferences>
@@ -41,7 +43,7 @@ function RootLayout({ children }) {
         style={theme === 'light' ? LIGHT_TOKENS : DARK_TOKENS}
       >
         <body>
-          <Header theme={theme} />
+          <Header initialTheme={theme} />
           <main>{children}</main>
           <Footer />
         </body>
